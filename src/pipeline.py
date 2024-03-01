@@ -8,7 +8,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 
-processed = Path(r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/test-pdm/data/processed/")
+processed = Path(r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/data/processed")
 print(processed)
 datafile = processed / "whatsapp-20240214-112323.parq"
 print(datafile)
