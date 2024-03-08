@@ -147,6 +147,9 @@ def create_mentions_over_time_plot(df, interval='year'):
     else:
         raise ValueError("Invalid interval. Supported values are 'month' and 'year'.")
 
+    # Exclude data for the last year (2024)
+    df = df[df['timestamp'].dt.year < 2024]
+
     # Define regex patterns for each word category
     word_patterns = {
         'Gewonnen': re.compile(r'\b(?:Win|winst|gewonnen)\b', re.IGNORECASE),
