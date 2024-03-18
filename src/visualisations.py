@@ -29,63 +29,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 
 
 
-
-# # Assuming 'df' is your DataFrame with 'timestamp' and 'message' columns
-# df['weekday'] = df['timestamp'].dt.day_name()
-# df['year'] = df['timestamp'].dt.year
-
-# weekday_grouped_msg = (df.groupby(['year', 'weekday'])['message']
-#                           .value_counts()
-#                           .groupby(['year', 'weekday'])
-#                           .sum()
-#                           .reset_index(name='count'))
-
-# # Sort the 'weekday' column in the desired order
-# weekday_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-# weekday_grouped_msg['weekday'] = pd.Categorical(weekday_grouped_msg['weekday'], categories=weekday_order, ordered=True)
-
-# # Sort the DataFrame by 'year' and 'weekday'
-# weekday_grouped_msg = weekday_grouped_msg.sort_values(by=['year', 'weekday'])
-# category_orders = {'weekday': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
-
-# colors = np.where(weekday_grouped_msg['year'] < 2021, 'blue', 'red')
-
-# fig = px.line_polar(weekday_grouped_msg, r='count', theta='weekday', color=colors,
-#                     line_close=True, template='plotly_dark', category_orders=category_orders)
-
-# max_count_value = weekday_grouped_msg['count'].max()
-# fig.update_traces(fill='toself')
-# fig.update_layout(
-#     polar=dict(radialaxis=dict(visible=True, title='Aantal berichten')),
-#     showlegend=True,
-#     title='Aantal berichten per dag en jaren van een zaalvoetbal team'
-# )
-
-# annotation_text = "Vanaf 2022 is de speeldag van voetbal verplaatst van woensdag naar vrijdag. <br> Dit is terug te zien in het aantal berichten per dag"
-# fig.add_annotation(
-#     go.layout.Annotation(
-#         text=annotation_text,
-#         xref="paper", yref="paper",
-#         x=0.02, y=.950,
-#         showarrow=False,
-#         font=dict(size=12, color="white"),
-#     )
-# )
-
-# # img_directory = 'img'
-# # os.makedirs(img_directory, exist_ok=True)
-
-# # Save the plot as an HTML file
-# # png_file_path = os.path.join(r'C:/Users/a427617\Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024', img_directory, 'msg_count_weekday_year.jpeg')
-
-# # fig.write_image(png_file_path, format='jpeg')  
-
-
-# # print(f"Plot saved as HTML: {png_file_path}")
-
-# fig.show()
-
-def create_weekday_line_polar_plot(df):
+def category_weekday_polar_plot(df):
     # Extract weekday and year from timestamp
     df['weekday'] = df['timestamp'].dt.day_name()
     df['year'] = df['timestamp'].dt.year
@@ -132,10 +76,12 @@ def create_weekday_line_polar_plot(df):
             font=dict(size=12, color="white"),
         )
     )
+    # fig.write_image('msg_count_weekday_year.png', format='png')  # Check file path here
+    # fig.write_image(r'C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/msg_count_weekday_year.png', format='png')  
+    
+    fig.show()
 
-    return fig
-
-def create_mentions_over_time_plot(df, interval='year'):
+def time_wins_mentions(df, interval='year'):
 
     # Convert the 'timestamp' column to datetime, if it's not already
     df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -194,7 +140,7 @@ def create_mentions_over_time_plot(df, interval='year'):
     plt.savefig(r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/Gewonnen_verloren.png")
     plt.show()
 
-def create_bbq_mentions_over_time_plot(df, save_path=None):
+def time_bbq_mentions(df, save_path=None):
     # Convert the 'timestamp' column to datetime, if it's not already
     df['timestamp'] = pd.to_datetime(df['timestamp'])
 
@@ -232,18 +178,33 @@ def create_bbq_mentions_over_time_plot(df, save_path=None):
 
     plt.show()
 
-
-def plot_message_length(df):
+def distributie_plot_message_length(df):
     # Convert the 'timestamp' column to datetime
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df['year'] = df['timestamp'].dt.year
+    df['day_of_week'] = df['timestamp'].dt.dayofweek
+
+    # Define a dictionary to map numerical values to day names
+    day_mapping = {
+        0: 'Monday',
+        1: 'Tuesday',
+        2: 'Wednesday',
+        3: 'Thursday',
+        4: 'Friday',
+        5: 'Saturday',
+        6: 'Sunday'
+    }
+
+    # Map numerical day values to day names
+    df['day_of_week'] = df['day_of_week'].map(day_mapping)
     
+
     # Exclude the years 2017 and 2024
     df_filtered = df[(df['year'] != 2017) & (df['year'] != 2024)].copy()  # Use copy() to create a copy
 
     # Extract quarter from timestamp
     df_filtered['quarter'] = df_filtered['timestamp'].dt.quarter
-
+    print(df_filtered.head())
     # Specify the save location
     save_location = r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/"
 
@@ -286,8 +247,7 @@ def plot_message_length(df):
     # Show the plots
     plt.show()
 
-
-def plot_mean_message_vs_media(df):
+def relations_mean_message_vs_media(df):
     """
     Plot mean message length vs. mean media presence for authors in DataFrame df.
     Highlight team leads in red with bold font.
@@ -348,9 +308,8 @@ df = pd.read_parquet(datafile)
 # print(df.dtypes)
 
 
-# fig = create_weekday_line_polar_plot(df)
-# fig.show()
-# create_mentions_over_time_plot(df, interval='year')
-# create_bbq_mentions_over_time_plot(df, save_path=r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/bbq_vermeldingen.png")
-plot_message_length(df)
-plot_mean_message_vs_media(df)
+category_weekday_polar_plot(df)
+time_wins_mentions(df, interval='year')
+time_bbq_mentions(df, save_path=r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/bbq_vermeldingen.png")
+distributie_plot_message_length(df)
+relations_mean_message_vs_media(df)
