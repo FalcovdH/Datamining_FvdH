@@ -290,6 +290,16 @@ def distributie_plot_message_length(df):
     # Show the plots
     plt.show()
 
+def categorize_author(author):
+    team_leads = ['Falco', 'Bryan Zaagsma']
+    team_members = ['Belly Zaalvoetbal', 'Jeroen Huter', 'Jeroen Zaaltvoetbal', 'Kay Jacobs', 'Kevin Zaagsma', 'Romano Mundo', 'Ruben Zaalvoetbal', 'Tom Danko', 'Casper Guit']
+    if author in team_leads:
+        return 'Teamlead'
+    elif author in team_members:
+        return 'Teammember'
+    else:
+        return 'Ex-teammember'
+
 def relations_mean_message_vs_media(df):
     """
     Plot mean message length vs. mean media presence for authors in DataFrame df.
@@ -299,39 +309,34 @@ def relations_mean_message_vs_media(df):
     df['has_media'] = df['message'].str.contains(r'<Media weggelaten>', case=False, regex=True)
 
     # Create a column to identify team members
-    team_members = [
-        'Belly Zaalvoetbal', 'Bryan Zaagsma', 'Casper Guit', 'Falco',
-        'Jeroen Huter', 'Jeroen Zaaltvoetbal', 'Kay Jacobs', 'Kevin Zaagsma',
-        'Romano Mundo', 'Ruben Zaalvoetbal', 'Tom Danko'
-    ]
-    df['is_team_member'] = df['author'].isin(team_members)
+    df['author_category'] = df['author'].apply(categorize_author)
 
     # Group by "author" and aggregate the necessary columns
     p = df.groupby(["author"]).agg({
-        "message_length": "mean",
+        "has_link": "sum",
         "has_media": "sum",
         "author": "count",
-        "is_team_member": "first",  # Take the first value since it's the same for each author
+        "author_category": "first",  # Take the first value since it's the same for each author
     }).rename(columns={"author": "count"})
 
     # Filter rows with count greater than 10
     p = p[p["count"] > 10]
 
     # Create scatterplot
-    ax = sns.scatterplot(data=p, x="message_length", y="has_media", size="count", sizes=(10, 500), alpha=0.3, hue="is_team_member", palette={False: 'gray', True: 'red'})
+    ax = sns.scatterplot(data=p, x="has_link", y="has_media", size="count", sizes=(10, 500), alpha=0.3, hue="author_category", palette={'Teamlead': 'red', 'Teammember': 'blue', 'Ex-teammember': 'gray'})
 
     # Add title and subtitle with smaller font size
-    plt.title("Comparison of teammembers (red) and ex-teammembers (gray)", fontsize=9)
-    plt.suptitle("Mean Message Length vs. Mean Media Presence", fontsize=12)
+    plt.title("Comparison of Teamlead (red), teammembers (blue) and ex-teammembers (gray)", fontsize=9)
+    plt.suptitle("Sum link vs. Sum media", fontsize=12)
 
     # Show names of the top 3 authors with the highest sum of has_media
     top_3_has_media = p.nlargest(3, 'has_media')['has_media']
     for i, (author, sum_has_media) in enumerate(top_3_has_media.items()):
-        plt.text(p.loc[author, "message_length"], p.loc[author, "has_media"], f"{author}: {sum_has_media}", fontsize=8, fontweight='bold')
+        plt.text(p.loc[author, "has_link"], p.loc[author, "has_media"], f"{author}: {sum_has_media}", fontsize=8, fontweight='bold')
 
     # Customizing legend
     handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles=handles[1:], labels=labels[1:], title="Team Member", fontsize=8, title_fontsize=9)
+    ax.legend(handles=handles[1:], labels=labels[1:], title="Author Category", fontsize=8, title_fontsize=9)
 
     # Set a formatter for the legend to use a decimal separator
     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter("{x:,.0f}"))
@@ -351,9 +356,9 @@ df = pd.read_parquet(datafile)
 # print(df.dtypes)
 
 
-category_weekday_polar_plot(df)
-categorie_common_words(df)
-time_wins_mentions(df, interval='year')
-time_bbq_mentions(df, save_path=r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/time_bbq_vermeldingen.png")
-distributie_plot_message_length(df)
+# category_weekday_polar_plot(df)
+# categorie_common_words(df)
+# time_wins_mentions(df, interval='year')
+# time_bbq_mentions(df, save_path=r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/time_bbq_vermeldingen.png")
+# distributie_plot_message_length(df)
 relations_mean_message_vs_media(df)
