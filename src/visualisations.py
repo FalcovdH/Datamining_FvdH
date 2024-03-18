@@ -81,6 +81,49 @@ def category_weekday_polar_plot(df):
     
     fig.show()
 
+def categorie_common_words(df):
+    # Assuming df is your DataFrame
+    common_words = df[['author', 'message']].copy()
+
+    STOPWORDS_NLTK = stopwords.words('dutch')  # Get NLTK Dutch stopwords
+    stopwords_list = list(STOPWORDS_NLTK)  # Convert NLTK stopwords to list
+
+    # Convert messages to lowercase, split into words, and filter out stopwords
+    common_words["message"] = (common_words["message"]
+                               .str.lower()
+                               .str.split()
+                               .apply(lambda x: [item for item in x if item not in stopwords_list])
+                               .explode()
+                               .reset_index(drop=True)
+                               )
+
+    common_words['message'] = common_words['message'].replace('nan', pd.NA)
+    common_words['message'] = common_words['message'].replace('', pd.NA)
+
+    # Count the occurrences of each word
+    word_counts = Counter(common_words['message'])
+    most_common_words = word_counts.most_common(10)  # Get the 10 most common words
+
+    # Convert word counts to DataFrame
+    words_df = pd.DataFrame(most_common_words, columns=['word', 'count'])
+
+    # Customize color palette
+    custom_palette = ["red" if count < 80 else "green" for count in words_df['count']]
+
+    # Plot using Seaborn
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data=words_df, x='word', y='count', palette=custom_palette)
+    plt.title('Most Common Words')
+    plt.xlabel('Words')
+    plt.ylabel('Count')
+    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    plt.tight_layout()
+
+    # Save the plot as an image
+    file_path = r'C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/common_words_plot.jpg'
+    plt.savefig(file_path)
+    plt.show()
+
 def time_wins_mentions(df, interval='year'):
 
     # Convert the 'timestamp' column to datetime, if it's not already
@@ -137,7 +180,7 @@ def time_wins_mentions(df, interval='year'):
                  arrowprops=dict(facecolor='black', arrowstyle='wedge,tail_width=0.7', lw=1),
                  fontsize=11, ha='center', va='center')
     
-    plt.savefig(r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/Gewonnen_verloren.png")
+    plt.savefig(r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/time_Gewonnen_verloren.png")
     plt.show()
 
 def time_bbq_mentions(df, save_path=None):
@@ -309,7 +352,8 @@ df = pd.read_parquet(datafile)
 
 
 category_weekday_polar_plot(df)
+categorie_common_words(df)
 time_wins_mentions(df, interval='year')
-time_bbq_mentions(df, save_path=r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/bbq_vermeldingen.png")
+time_bbq_mentions(df, save_path=r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/time_bbq_vermeldingen.png")
 distributie_plot_message_length(df)
 relations_mean_message_vs_media(df)
