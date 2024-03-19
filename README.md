@@ -7,6 +7,8 @@ git config --global user.email "falco.vandenhoogen@gmail.com"<br>
 
 Run python file:<br>
 python -m src.preprocess --device='ios' <br>
+python -m src.main --device iOs
+
 python src/pipeline.py<br>
 
 PDM:<br>
@@ -22,4 +24,12 @@ GIT acc.:<br>
 https://github.com/McKovin<br>
 https://github.com/raoulg/<br>
 https://github.com/FalcovdH<br>
+
+
+Code netjes maken:
+1. Use isort for organiseren python libraries
+2. Use black for opmaak van de python code
+3. Use RUFF for code regels op te lossen. Verwijderd ook niet gebruikte imports
+4. Use mypy for type hinting solving.
+    # type: ignore om de regel over te slaan.
 
