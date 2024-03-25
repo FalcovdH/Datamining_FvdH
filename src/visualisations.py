@@ -362,7 +362,7 @@ class DataAnalyzer:
             plt.savefig(path.join(self.save_location, "relation_message_media.png"))
             plt.show()
 
-def main():
+def main_v():
     # Define paths
     datafile_path = r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/data/processed/whatsapp-20240214-112323.parq"
     save_location = r"C:/Users/a427617/Documents/Master Data science/Blok 3 - Data mining/Data-Mining---2024/img/"
@@ -371,13 +371,13 @@ def main():
     analyzer = DataAnalyzer(datafile_path, save_location)
 
     # Perform analysis
-    analyzer.category_weekday_polar_plot()
-    analyzer.categorie_common_words()
-    analyzer.time_wins_mentions(interval='year')
-    analyzer.time_bbq_mentions()
-    analyzer.distributie_plot_message_length()
+    # analyzer.category_weekday_polar_plot()
+    # analyzer.categorie_common_words()
+    # analyzer.time_wins_mentions(interval='year')
+    # analyzer.time_bbq_mentions()
+    # analyzer.distributie_plot_message_length()
     analyzer.relations_link_vs_media()
 
 # Call the main function
 if __name__ == "__main__":
-    main()
+    main_v()

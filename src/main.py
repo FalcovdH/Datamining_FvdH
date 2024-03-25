@@ -1,8 +1,13 @@
+# import threading
+
 from src.preprocess import main
-from src.visualisations import main
+from src.visualisations import main_v
 
-preprocess_df = main()
-print(preprocess_df)
+# main()
+main_v()
 
-visualisations = main()
-print(visualisations)
+# preprocess_df = threading.Thread(target=main())
+# visualisations = threading.Thread(target=main_v())
+
+# preprocess_df.start()
+# visualisations.start()

@@ -13,7 +13,7 @@ class BaseRegexes(Protocol):
 class iOS_Regexes(BaseRegexes):
     timestamp = r"(?<=\[)\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}(?=\])"
     author = r"(?<=\]\s)(.*?)(?=:)"
-    clear = r"\[\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}\]\s[~a-zA-Z\s]+:"
+    clear = r"\[\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}\]\s.*?:"
     format = "%d-%m-%Y %H:%M:%S"
 
 
