@@ -15,9 +15,10 @@ logger.add(sys.stderr, level="INFO")
 
 
 class WhatsappPreprocessor:
-    def __init__(self, folders: Folders, regexes: BaseRegexes):
+    def __init__(self, folders: Folders, regexes: BaseRegexes, preprocesTime):
         self.folders = folders
         self.regexes = regexes
+        self.preprocesTime = preprocesTime
 
     def __call__(self):
         records, _ = self.process()
@@ -25,10 +26,10 @@ class WhatsappPreprocessor:
 
     def save(self, records: list[tuple]) -> None:
         df = pd.DataFrame(records, columns=["timestamp", "author", "message"])
-        now = datetime.now().strftime("%Y%m%d-%H%M%S")
-        outfile = self.folders.processed / f"whatsapp-{now}.csv"
+        # now = datetime.now().strftime("%Y%m%d-%H%M%S")
+        outfile = self.folders.processed / f"whatsapp-{self.preprocesTime}.parq"
         logger.info(f"Writing to {outfile}")
-        df.to_csv(outfile, index=False)
+        df.to_parquet(outfile, index=False)
         logger.success("Done!")
 
     def process(self) -> tuple:
@@ -41,7 +42,7 @@ class WhatsappPreprocessor:
         authorreg = self.regexes.author
         fmt = self.regexes.format
 
-        with datafile.open(encoding='utf-8') as f:
+        with datafile.open(encoding="utf-8") as f:
             for line in f.readlines():
                 ts = re.search(tsreg, line)
                 if ts:
