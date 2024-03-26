@@ -8,7 +8,6 @@ git config --global user.email "falco.vandenhoogen@gmail.com"<br>
 Run python file:<br>
 python -m src.preprocess --device='ios' <br>
 python -m src.main --device iOs
-
 python src/pipeline.py<br>
 
 PDM:<br>
@@ -27,9 +26,13 @@ https://github.com/FalcovdH<br>
 
 
 Code netjes maken:
-1. Use isort for organiseren python libraries
-2. Use black for opmaak van de python code
-3. Use RUFF for code regels op te lossen. Verwijderd ook niet gebruikte imports
+1. Use isort for organiseren python libraries - isort src
+2. Use black for opmaak van de python code - black src
+3. Use RUFF for code regels op te lossen. Verwijderd ook niet gebruikte imports - ruff check  /  ruff check src --fix
 4. Use mypy for type hinting solving.
     # type: ignore om de regel over te slaan.
+5. Vulture uitvoeren
+
+huggingface hub. 
+
 
